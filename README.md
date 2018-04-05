@@ -188,6 +188,11 @@ Loaders and transpilers do not have any special responsibilities that are requir
 
 i.e. If a file is defined as being written in ES2016 and `env` is targeting ES2015 the `env` can decide to exclude all the ES2017+ transforms and only have the cost of running transforms to transpile ES2016 to ES2015.
 
+## Links
+
+- [WebPack issue](https://github.com/webpack/webpack/issues/6918)
+- [Rollup issue](https://github.com/rollup/rollup/issues/2104)
+
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
