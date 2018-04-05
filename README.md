@@ -193,6 +193,17 @@ i.e. If a file is defined as being written in ES2016 and `env` is targeting ES20
 - [WebPack issue](https://github.com/webpack/webpack/issues/6918)
 - [Rollup issue](https://github.com/rollup/rollup/issues/2104)
 
+## *"Just transpile to ES5"*
+
+There are a number of reasons why it does not make sense to require all npm packages transpile their default `main`'s code to ES5.
+
+- Many packages are designed primarily for use in Node.js. At this point Node 4 is the lowest supported version, and it has partial ES2015 support. Very soon even that will be EOL and Node 6 will be the new minimum for many packages, which has [support for 99% of ES2015 features](http://node.green/). In one year Node 8 will be the minimum, and that has over [support for over 65% of ES2017](http://node.green/#ES2017) (that 65% effectively covers all the useful features of ES2017, most of the stuff that version does not support are less commonly used features like shared memory and atomics). It does not make sense to demand that packages designed primarily for use in Node.js all transpile their code to ES5 and forgo the advantages of native support just to support a small subset of the package's users that want to use the package in the browser.
+- Using pre-transpiled ES5 code voids your ability to choose to ship ES2015 code. 80-90% of browsers currently in use have nearly complete support for ES2015. For some sites their target market may be nearly 100% composed of evergreen browsers with effectively complete ES2015 support. And for other sites, creating 2 bundles of their code and switching between (one for evergreen browsers with ES6 support and another for older browsers) may be beneficial enough to them to be worth the extra steps.
+- Sometimes transpiling the ES6 code of a package to *ES5* yourself with env targets and other Babel optimizations specific to your environment can yield significant savings to the resulting code delivered to the browser. If all packages are pre-compiled to ES5 you lose this option.
+- Some parts of ES2015+ such as generators and async functions require the regenerator runtime which is a significant size and unlike a polyfill cannot be omitted in environments with native support if it is used. If a package uses these features and we demand it is transpiled to ES5, the regenerator runtime will be a requirement in Node.js and evergreen browsers where there is enough native support of generators (and sometimes async functions) to not need regenerator.
+- Some browser features such as natively supported Custom Elements require ES6 classes and do not work with ES5 transpiled code; unless you include an ES5 adapter that cannot be transpiled as part of your ES5 bundle and has some quirks when you include it. Parts of the ecosystem using these like Polymer 3.x **must** distribute ES6 code to avoid breakage in current browsers.
+- Browsers are beginning to support ES2015 modules natively with `<script type="module">`. These modules are full ES2015 and do not require transpilation to ES5. `nomodule` is also available which begins to open up a browser supported method of having build tools generate an ES5 script bundle and an ES2015 module bundle and serve them separately to the browser without any special loader scripts.
+
 ## License
 
 <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a>
